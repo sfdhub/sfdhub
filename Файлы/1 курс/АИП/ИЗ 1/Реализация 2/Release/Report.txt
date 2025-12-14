@@ -1,0 +1,4 @@
+First tarif plan month cost: 459900
+Second tarif plan month cost: 500
+First tarif plan is dorozhe then second
+End of report;

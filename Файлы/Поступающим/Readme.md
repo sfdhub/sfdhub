@@ -1,0 +1,1 @@
+Ваш чатик: <https://vk.me/join/v1RlnDwn4d1/d2QAQwMJoBuj99WE4i/TWC0=>

@@ -1,0 +1,10 @@
+Communication within the network,1,3,day
+SMS,2,0.15,#
+Connection with other mobile networks,3,5,day
+Roaming,4,10.5,min
+International tariff,5,50,min
+Internet,6,200,month
+Spotify,7,400,month
+Television,8,1000, month
+Internet for 7 GB,9,300,month
+Netflix subscription,10,500,month
