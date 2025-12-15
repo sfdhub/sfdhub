@@ -1,0 +1,5 @@
+C:\Users\TeaTime\Documents\Мой компьютер\Институт 2021 2 курс\С#\Лабораторная №5 (Коллекции и обобщения)\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.AssemblyReference.cache
+C:\Users\TeaTime\Documents\Мой компьютер\Институт 2021 2 курс\С#\Лабораторная №5 (Коллекции и обобщения)\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.SuggestedBindingRedirects.cache
+C:\Users\TeaTime\Documents\Мой компьютер\Институт 2021 2 курс\С#\Лабораторная №5 (Коллекции и обобщения)\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Properties.Resources.resources
+C:\Users\TeaTime\Documents\Мой компьютер\Институт 2021 2 курс\С#\Лабораторная №5 (Коллекции и обобщения)\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.GenerateResource.cache
+C:\Users\TeaTime\Documents\Мой компьютер\Институт 2021 2 курс\С#\Лабораторная №5 (Коллекции и обобщения)\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.CoreCompileInputs.cache

@@ -1,0 +1,96 @@
+/*
+Институт компьютерных технологий и информационной безопасности ЮФУ
+Кафедра МОП ЭВМ
+Инженерия ПО для СРВ и ИВ. Модуль DSP
+
+Лабораторная работа №4
+Программирование на ЯВУ
+
+Исполнитель: Вахрушев Дмитрий Евгеньевич
+08.04.2023
+
+Вариант №2
+Среднее значение массива на С
+*/
+#include <def21060.h>
+#include <asm_sprt.h>
+#include "KTbo2-7_VakhrushevDE_constants_h.h"
+
+.global _SetupPorts;
+.global _IRQ_Service;
+.extern _MeanCompute;
+
+
+.section/pm seg_dmda;
+.var rawX1[N];
+.var rawX2[N];
+
+.var xSamplesTcb0[8] = {0, 0, 0,
+					rawX2-0x200000,
+					xSamplesTcb1 + 7,
+					@rawX1,
+					1,
+					rawX1};
+.var xSamplesTcb1[8] = {0, 0, 0,
+					rawX1-0x200000,
+					xSamplesTcb0 + 7,
+					@rawX2,
+					1,
+					rawX2};
+.endseg;
+
+.section/pm seg_pmco;
+/*
+Init
+	SPORT0-RX for receive with chain-DMA
+	LINK2 on output
+C prototype: void SetupPorts(void)
+Tempory using: R0
+Using: xSamplesTcb(0,1) - TCB blocks for DMA, rawX(0,1) - for DMA-buffer
+Return: none
+*/
+_SetupPorts:
+	R0 = SPORT_DIV;
+ 	DM(RDIV0) = R0;	//div for X-samples
+
+	// Setting's for SPORT0 - RX
+	R0 = 0xC05F1;		//SPEN = 1
+						//SLEN = 31 (32 факт.)
+						//ICLCK = 1
+						//DEN, SCHEN = 1
+	DM(SRCTL0) = R0;
+	
+	R0 = xSamplesTcb0 + 7;
+ 	DM(CP0) = R0;		//settings X-input DMA
+ 	
+ 	R0 = 0x3FEBF;	//only LINK2 on LBUF2, another disable
+ 	DM(LAR) = R0;	//LINK2 on LBUF2
+ 	
+ 	R0 = 0x900;		//L2EN = 1, LxTRAN = 1
+ 	DM(LCTL) = R0;
+ 	
+	leaf_exit;	//return from function			
+_SetupPorts.end: nop;
+
+/*
+IRQ handler for RX0 DMA IRQ. Compute avg in buffer
+C prototype: void IRQ_Service(int)
+Tempory using: R0, R1, R4, R8
+Using: float MeanCompute(float *buffer, int length), rawX(0,1)
+Return: none
+*/
+_IRQ_Service:
+	R1 = 0x20000;
+	R4 = DM(GP0);
+	
+	R4 = R4 + R1; 	//calculate buffer addr, put in first arg.
+	R8 = N;			//put N in second arg.
+	ccall(_MeanCompute);	//call MeanCompute
+	
+	R0 = TRUNC F0;	//float 32b to SI 32b
+	DM(LBUF2) = R0;	//make output
+	
+	leaf_exit;	//return from function
+_IRQ_Service.end: nop;
+
+.endseg;

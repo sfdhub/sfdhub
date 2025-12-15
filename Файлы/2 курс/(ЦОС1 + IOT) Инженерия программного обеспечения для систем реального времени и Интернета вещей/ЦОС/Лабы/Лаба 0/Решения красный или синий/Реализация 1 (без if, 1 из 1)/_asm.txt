@@ -1,0 +1,70 @@
+#include "def21060.h"
+
+#define N 4000
+#define BLUE_LOWER_TO 100
+
+//-------------------------------------------------------------
+// Source Array 
+// 0x30000
+.section/dm dm_data;
+.var input[N];
+//-------------------------------------------------------------
+
+//-------------------------------------------------------------
+// Result Array 
+// 0x24000
+.section/pm pm_data;
+.var output[N];
+//-------------------------------------------------------------
+
+//-------------------------------------------------------------
+// 0x20004 - 0x20007
+.section/pm pm_irq_svc;
+    nop;
+    jump start;
+    nop;
+    nop;
+//-------------------------------------------------------------
+
+//-------------------------------------------------------------
+// 0x20004 - 0x20007
+.section/pm pm_code;
+start:
+    I0 =input;
+    I1=input;  
+    M0=1;
+    M1=125;
+    I8=output;
+    I9=output;
+    M8=1;
+    M9=125;
+
+    R2 = BLUE_LOWER_TO;
+    R3 = 0xFF0000; // tmp register
+    R4 = 0x00FFFF; // Mask for remove old BB values
+    R5 = 0xFF0000; // Mask for get (BB)GGRR
+
+    
+    LCNTR = 110, DO xxx UNTIL LCE;
+      I0=I1;
+      I8=I9;
+      LCNTR=125, DO yyy UNTIL LCE;
+        R1=DM(I0,M0); // Curent value
+
+        R3 = R1 AND R3; // Get blue num (BB0000)
+		R3 = LSHIFT R3 BY -16; // Shift 16 to right (0000BB)
+		R3 = R3 - R2; // Minus BLUE_LOWER_TO
+		
+		R3 = LSHIFT R3 BY 16; // Return 16 left shift 
+		R3 = R3 AND R5; // Use mask for remove not used numbers
+		
+		R1 = R1 AND R4; // Remove old Blue values
+		R1 = R1 OR R3; // Concatinate R1 (00GGRR) and result in R3 (BB0000)
+		
+yyy:      PM(i8,m8)=r1;
+      modify(i1,m1);
+xxx:    modify(i9,m9);
+      
+wait: idle;
+    jump wait;
+//-------------------------------------------------------------

@@ -1,0 +1,73 @@
+ i(         11)=
+4.2
+Vvodim dannye: anodnoe napriajenie v Voltah
+ua(         11)=
+0.2
+Vvodim dannye: anodnyi tok v mkA s plavauishey tochkoi
+ i(         12)=
+3.0
+Vvodim dannye: anodnoe napriajenie v Voltah
+ua(         12)=
+0.22
+Vvodim dannye: anodnyi tok v mkA s plavauishey tochkoi
+ i(         13)=
+1.5
+Vvodim dannye: anodnoe napriajenie v Voltah
+ua(         13)=
+0.23
+Vvodim dannye: anodnyi tok v mkA s plavauishey tochkoi
+ i(         14)=
+0.0
+Vvodim dannye: anodnoe napriajenie v Voltah
+ua(         14)=
+0.24
+Proverim vvedennye dannye
+   116.000000       .000000
+    94.000000       .020000
+    73.000000       .040000
+    56.000000       .060000
+    42.000000       .080000
+    31.000000       .100000
+    22.000000       .120000
+    15.000000       .140000
+    10.000000       .160000
+     7.000000       .180000
+     4.200000       .200000
+     3.000000       .220000
+     1.500000       .230000
+      .000000       .240000
+esli wwod veren, to vvedite celyi 0
+0
+vvedite temperaturu katoda v Kelvin
+878.0
+temperatura=  878.0
+masshtab napriajenia U*= .756578E-01
+masshtab toka J*= .116000E-03
+Termoeds TEPA= .151316E+00
+ojidaemoe znachenie di/du=-.129113E-03
+experimentalnoe znachenie di/du=-.110000E-02
+vvedite celyi 0 chtoby prodoljit
+
+0
+znachenie maksimalnogo toka dioda= .171426E-03
+srednee znachenie koncentracii n0= .968795E+13
+srednee znachenie lineinoi plotnosti tau= .698448E-09
+sredniaia skorost u anoda vsr= .245439E+06
+znachenie koefficienta G1= .892091E+04
+znachenie naibolee veroiatnoy skorosti= .230709E+06
+vyvodim v kolonki 1 - vj/vv, 2 - f4,  3 - F4
+    1.006932         1.151586         9.813005
+    1.020656         1.149856         9.366960
+    1.034198         1.146491         7.582777
+    1.047565         1.141589         6.244640
+    1.060763         1.135247         4.906503
+    1.073799         1.127559         4.014411
+    1.086678         1.118619         3.122320
+    1.099407         1.108519         2.230228
+    1.111990         1.097345         1.338137
+    1.124432         1.085184         1.248928
+    1.136738         1.072118          .535255
+    1.145881         1.061773         1.338137
+    1.151936         1.054635         1.338137
+vvedite 0 chtoby prodoljit, inache 1
+

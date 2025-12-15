@@ -1,0 +1,135 @@
+№1
+
+-- Устанавливаем контекст использования базы данных "Hotel"
+USE Hotel
+
+-- Добавляем столбец "TypeNumber" в таблице "Reservation" на тип данных varchar с максимальной длиной 20 символов
+ALTER TABLE dbo.Reservation
+add TypeNumber varchar(20)
+-- Завершаем предыдущую операцию ALTER TABLE с помощью команды GO
+GO
+-- Добавляем ограничение (constraint) на таблицу "Reservation". 
+--Ограничение CK_Reservation_TypeNumber гарантирует, что значение столбца "TypeNumber" 
+--может быть только одним из: 'Люкс', 'Улучшенный', 'Стандартный'
+ALTER TABLE dbo.Reservation
+ADD CONSTRAINT CK_Reservation_TypeNumber CHECK (TypeNumber IN ('Люкс','Улучшенный','Стандартный'))
+-- Завершаем предыдущую операцию ALTER TABLE с помощью команды GO
+GO
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+№2
+
+use [Hotel];
+
+-- Обновляем таблицу "Reservation"
+update [Reservation]
+
+-- Устанавливаем значение столбца "TypeNumber" на основе условий
+-- Если значение столбца "Cost" меньше 2000, то устанавливаем "Стандартный"
+-- Если значение столбца "Cost" находится в диапазоне от 2000 до 3500, то устанавливаем "Улучшенный"
+-- Если значение столбца "Cost" больше 3500, то устанавливаем "Люкс"
+set [TypeNumber] = case 
+
+	when [Cost] < 2000 then 'Стандартный'
+	when [Cost] >= 2000 and [Cost] <= 3500 then 'Улучшенный'
+	when [Cost] > 3500 then 'Люкс'
+
+end
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+№3
+
+CREATE VIEW View_TotalDeptors AS
+SELECT
+    c.[IDClient],
+    c.[Surname] + ' ' + c.[Name] + ' ' + c.[Patronymic] AS FIO,
+    n.[Cost] * rn.[NumberDay] AS Cost,
+    SUM(p.[Payment]) AS Payment
+FROM
+    [dbo].[Clients] c
+    JOIN [dbo].[Accomodation] a ON c.IDClient = a.IDClient
+    JOIN [PaymentCard] p ON p.[IDPaymentCard] = a.[IDPaymentCard]
+    JOIN [dbo].[Reservation_Number] rn ON rn.[IDClient] = c.[IDClient]
+    JOIN [dbo].[Numbers] n ON n.[IDNumber] = rn.[IDNumber]
+WHERE
+    a.[PayDate] IS NULL
+GROUP BY
+    c.[IDClient],
+    c.[Surname] + ' ' + c.[Name] + ' ' + c.[Patronymic],
+    n.[Cost] * rn.[NumberDay];
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+№4
+
+CREATE PROCEDURE Proc_NumbersStatistic
+    @StartDay DATE,
+    @EndDay DATE
+AS
+BEGIN
+    SELECT n.[IDNumber]
+        , COUNT(rn.[IDReserved]) AS CountNumber
+        , ISNULL(SUM(n.[Cost]*rn.[NumberDay]), 0) AS TotalCost
+        , ISNULL(SUM(rn.[NumberDay]), 0) AS TotalDays
+    FROM [Hotel].[dbo].[Numbers] n
+    LEFT JOIN [Hotel].[dbo].[Reservation_Number] rn ON n.[IDNumber] = rn.[IDNumber]
+                                                 AND rn.[ArrivalDate] >= @StartDay
+                                                 AND rn.[ArrivalDate] <= @EndDay
+    GROUP BY n.[IDNumber]
+    ORDER BY n.[IDNumber];
+END;
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+№5
+
+CREATE NONCLUSTERED INDEX IX_Reservation_Number_Covering
+ON [dbo].[Reservation_Number] ([ArrivalDate], [IDClient])
+INCLUDE ([IDNumber], [IDReserved], [NumberDay], [NumberPeople])
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+№6
+
+CREATE TABLE [Reservation_Archive]
+(
+  [IDReserved] INT PRIMARY KEY not null,
+  [IDClient] INT not null,
+  [EstimatedArrivalDate] DATE not null,
+  [NumberDays] INT not null,
+  [EstimatedDepartureDate] DATE null,
+  [IsExist] BIT null,
+  [IsPaid] BIT null,
+  [Cost] MONEY null,
+  [TypeNumber] NVARCHAR(50) not null
+);
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+№7
+
+INSERT INTO [Reservation_Archive] ([IDReserved], [IDClient], [EstimatedArrivalDate], [NumberDays], 
+[EstimatedDepartureDate], [IsExist], [IsPaid], [Cost], [TypeNumber])
+SELECT [IDReserved], [IDClient], [EstimatedArrivalDate], [NumberDays], [EstimatedDepartureDate], [IsExist], [IsPaid], [Cost], [TypeNumber]
+FROM [Reservation]
+WHERE [IsPaid] = 1;
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+№8
+
+
+-- Шаг 1: Создание логина
+USE [master];
+GO
+CREATE LOGIN hoteluser WITH PASSWORD = 'Hoste1U5er-2022';
+ALTER LOGIN [hoteluser] WITH DEFAULT_DATABASE=[Hotel], DEFAULT_LANGUAGE=[us_english], CHECK_EXPIRATION=OFF, CHECK_POLICY=ON
+GO
+
+-- Шаг 2: Создание схемы
+USE [Hotel];
+GO
+CREATE SCHEMA [archive];
+GO
+
+-- Шаг 3: Создание пользователя с правами
+USE [Hotel];
+GO
+CREATE USER hoteluser FOR LOGIN hoteluser WITH DEFAULT_SCHEMA = [archive];
+GO
+GRANT SELECT ON DATABASE::Hotel TO hoteluser;
+GO
+DENY DELETE ON SCHEMA::archive TO hoteluser;
+GO
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+№11
+
+Сами создайте

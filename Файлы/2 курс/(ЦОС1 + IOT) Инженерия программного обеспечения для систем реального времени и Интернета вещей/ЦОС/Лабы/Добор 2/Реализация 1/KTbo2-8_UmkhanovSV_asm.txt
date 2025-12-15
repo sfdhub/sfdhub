@@ -1,0 +1,164 @@
+// UFU, ICTIS
+// DSP
+// Umkhanov Sobar-Ali Viskhanovich
+// KTbo3-8
+// Lab-1
+// 11.09.2024
+
+#include "def21060.h"
+
+#define Q 4
+#define Kl 4
+#define Kr 3    
+
+//------------------------------------------------------
+.SECTION/DM     dm_port; 
+.VAR in;
+.VAR outl;
+.VAR outr;
+//------------------------------------------------------
+
+//------------------------------------------------------
+.SECTION/PM     pm_irq_svc;
+		nop; 
+		jump start; 
+		nop;
+		nop;
+//------------------------------------------------------
+
+//------------------------------------------------------
+.SECTION/PM     pm_irq_tmz;
+		call compute_main (db);
+			r0 = dm(in);
+			nop;
+		rti;
+//------------------------------------------------------
+
+//------------------------------------------------------
+.SECTION/PM     pm_code;
+start:  
+	
+	// setting constants in registters
+	r11 = Kl;
+	r12 = Kr;
+	r14 = Q;
+	
+	// setting a count for watch_counter function
+	r15 = r14;
+	
+	// setting timer period and count
+	tperiod = 100;
+	tcount = 100;
+	
+	// enabling timer
+	bit set mode1 IRPTEN; 	// globally enable interrupts
+	bit set mode2 TIMEN; 	// enable timer
+	bit set imask TMZHI;	// enable interrupts from timer
+	
+	
+wait:	IDLE;
+        jump wait;
+
+/*
+	main function that is called by interrupt;
+*/        
+
+compute_main:
+	// r1 - left value
+	// r2 - right value
+
+	// masks
+	r3 = 0xFFFF0000;
+	r4 = 0x0000FFFF;
+	
+	r1 = r0 and r3; // left side
+	r2 = r0 and r4; // right side;
+	
+	r3 = r1 * r11 (SSI); // left side * Kl
+	r4 = r2 * r12 (SSI); // right side * Kr
+	
+	// checking if it repeated Q times
+	call watch_counter (db);
+		r5 = r5 + r3; // sum of the left side * kl
+		r6 = r6 + r4; // sum of the right side * kr
+		
+	rts;  
+	
+/*
+	function for packing values with offsetting the package register in r10;
+	input registers:
+		r8 = value for packing
+		r9 = offset value
+		r10 = package register;
+	output registers:
+		r10 = package register;
+*/ 
+pack_def:
+	r10 = r10 or r8;
+	r10 = lshift r10 by r9;
+	rts;      
+    
+/*
+	modifieble function that is called by watch_counter
+	input registers:
+		r14 = model for counter
+	output registers:
+		r15 = set counter again with r14;
+*/
+watch_event:
+
+	// setting params for pack_def
+	r8 = r5;
+	r9 = lshift r14 by -1;
+	
+	// deviding the left value
+	call pack_def (db);
+		r9 = -r9;
+		r10 = 0;
+	
+	// setting params for pack_def
+	r8 = r10;
+	r9 = 16;
+	
+	// shifting to the right by 16
+	call pack_def (db);
+		r9 = -r9;
+		r10 = 0;
+		
+	dm(outl) = r10;
+		
+	// setting params for pack_def
+	r8 = r6;
+	r9 = lshift r14 by -1;
+	
+	// deviding the right value
+	call pack_def (db);
+		r9 = -r9;
+		r10 = 0;
+	
+	dm(outr) = r10;
+	
+	w_e_end:
+	r15 = r14;
+	
+	// reset of the sums
+	r5 = 0;
+	r6 = 0;
+	rts;	 
+        
+/*
+	modifieble function that counts and calls watch_event
+	input registers:
+		r15 = counter;
+	output registers:
+*/
+watch_counter:
+	r15 = r15 - 1;
+	if ne jump w_c_end;
+	// call watch_event if timer repeated Q times
+	call watch_event (db);
+		nop;
+		nop;
+	w_c_end:
+	rts;
+        

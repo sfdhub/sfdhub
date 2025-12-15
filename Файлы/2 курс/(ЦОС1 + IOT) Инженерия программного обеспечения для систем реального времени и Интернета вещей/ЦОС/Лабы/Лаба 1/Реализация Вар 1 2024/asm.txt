@@ -1,0 +1,84 @@
+
+/*************************************************************/
+/*                      Data Packing                         */
+/*************************************************************/
+
+#include "def21060.h"    
+#define N 3			// number of output words
+
+
+.SECTION/DM     dm_data; 
+.VAR input[N*32] = "input03.dat";
+
+
+.SECTION/PM     pm_data;  
+.VAR decoded[N*32]; // decoded buffer
+.VAR output[N]; 	// packed answer
+
+
+.SECTION/PM     pm_irq_svc;
+		nop; 
+		jump start; 
+		nop;
+		nop;
+
+		
+.SECTION/PM     pm_code;
+start:  
+		// R14 as zero for comparing always
+		R15 = 1;
+		I1 = input;
+		M1 = 1;
+
+		
+		// Calc start signal: 0 or 1. Save into R1
+		// Original value was saved in R2
+		R2 = DM(I1, M1); 
+		COMP(R2, R14);
+		if NE R1 = R15;
+		
+		I8 = decoded;
+		M8 = 1;
+		
+		PM(I8, M8) = R1; // write first report
+		
+			// In cycle read new report in R3, comparing with old in R2
+			//  if equal: R1 = 0
+			//  else: R1 = 1
+			//  R2 = R3 - save old;
+		LCNTR = N*32-1, do xxx UNTIL LCE;
+			R1 = R1 xor R1, R3 = DM(I1, M1); 	// R1 = R1 xor R1 <- optimize
+			COMP(R2, R3);						// compare
+			if NE R1 = R15;						// not equal => 1	
+xxx:		R2 = R3 + R14, PM(I8,M8) = R1; 		// R2 = R3 + 0 <- optimize
+
+		// Shift I3 (decoded ptr) to the end of decoded buffer,
+		//   because I want read it end-to-start
+		I3 = decoded + N*32-1;
+		M3 = -1;
+		
+		// Shift I8 (output ptr) to the end of output buffer, 
+		//  because I want read it end-to-start
+		I8 = output + N -1;
+		M8 = -1;
+		
+		LCNTR = N, DO pack_in_r1 UNTIL LCE;	
+			call pack_proc;		// pack next
+			nop;
+			nop;
+pack_in_r1:	PM(I8, M8) = R1;	// save
+
+wait:	IDLE;
+    	jump wait;
+
+ // Subroutine for pack last bit in 32 words into R1
+ // In: I3 - end point to words, M3 - negative modifier (example: M3 = -1)
+ // Out: R1 - packed word, I3 - prev 32 words for packing
+ //	Warning!!! All words in [I3-M3*31; I3] must be masked by 0x00000001. Subroutine has not 
+ //  a mask
+ pack_proc:
+ 			LCNTR = 32, DO pack_cycle UNTIL LCE;
+ 				R1 = LSHIFT R1 by 1, R2 = DM(I3, M3);
+ pack_cycle: 	R1 = R1 or R2;
+ 			rts;
+

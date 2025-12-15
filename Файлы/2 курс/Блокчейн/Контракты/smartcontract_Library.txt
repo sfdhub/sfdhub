@@ -1,0 +1,101 @@
+pragma solidity 0.7.0;
+
+contract Library{
+
+    struct Book{ //структура книги
+        string title; //Название книги
+        bool check; //взята ли книга или нет
+        uint taken; //количество раз когда она взята
+        uint max; //максимально количество дней которое книга может быть на руках
+        uint[] fday; //массив первых дней взятия
+        uint[] eday; //массив дней возврата
+        uint fineprice; //цена за просрочку книги /рублей в день
+        address[100] history; //массив для истории книги (списко тех кто брал книгу)
+    }
+
+    struct People{ //структура для читателя
+        string name; //имя 
+        uint delays; //просрочки
+        bool check; //есть ли на руках книга
+        uint idBookTaken; //айди взятой книги
+        uint extension; //продления (на данный момент)
+        uint fine; //штраф
+    }
+
+        mapping(address => People) public peoples;
+        mapping(uint => Book) public books;
+    
+
+    address public admin;
+    constructor(address sender) public {
+        admin = sender;
+    }
+
+    modifier OnlyAdmin{
+        require(msg.sender == admin, "Not Admin");
+        _;
+    }
+
+    function _add_People(address _id, string memory _name)public OnlyAdmin{
+        require(_id != address(0), "empty adress");
+        peoples[_id]=People(_name,0,false,0,0,0);
+    }
+
+    function _add_Book(uint _key,string memory _name, uint _maxtime, uint fine_p)public OnlyAdmin{
+        require(books[_key].max == 0,  "This key is not empty");
+        uint[] memory g1;
+        address[100] memory g2;
+        books[_key]=Book(_name,false,0,_maxtime,g1,g1,fine_p,g2);
+    }
+    
+
+    function _take_Book(address _id, uint _idBook)public OnlyAdmin{
+        require(peoples[_id].check!=true, "This user, have book now!");
+        require(books[_idBook].check!=true, "This book has already taken");
+        books[_idBook].check=true;
+        peoples[_id].check=true; 
+        books[_idBook].fday.push(block.timestamp);
+        peoples[_id].idBookTaken=_idBook;    
+        books[_idBook].history[books[_idBook].taken]=_id;
+    }
+
+    function _return_Book(address _id)public OnlyAdmin{
+        require(peoples[_id].check!=false, "This user, do not have book now!");
+        books[peoples[_id].idBookTaken].check=false;
+        peoples[_id].check=false;
+        books[peoples[_id].idBookTaken].eday.push(block.timestamp);
+        uint fd=block.timestamp;
+        uint fm=books[peoples[_id].idBookTaken].fday[books[peoples[_id].idBookTaken].taken];
+        uint sum=fd-7*peoples[_id].extension-fm;
+        if(sum>books[peoples[_id].idBookTaken].max){
+            peoples[_id].delays+=1;
+            peoples[_id].fine+=(sum-books[peoples[_id].idBookTaken].max)*books[peoples[_id].idBookTaken].fineprice;
+        } 
+        books[peoples[_id].idBookTaken].taken+=1;
+        peoples[_id].idBookTaken=0;
+        peoples[_id].extension=0;
+    }
+
+    function _change_name(address _id, string memory _name)public OnlyAdmin{
+        peoples[_id].name=_name;
+    }
+
+    function _change_Time(uint _id, string memory _name, uint newT)public OnlyAdmin{
+        books[_id].max=newT;
+    }
+
+    function _Plus_Extantion(address _id)public OnlyAdmin{
+        require(peoples[_id].check!=false, "This user, do not have book now!");
+        peoples[_id].extension+=1;
+    }
+
+    function _Fine_pay(address _id, uint money)public{
+        require(peoples[_id].fine!=0, "This user, do not fine");
+        if(money>=peoples[_id].fine){
+            peoples[_id].fine=0;
+        }
+        else{
+            peoples[_id].fine-=money;
+        }
+    }
+}

@@ -1,0 +1,45 @@
+/*
+Институт компьютерных технологий и информационной безопасности ЮФУ
+Кафедра МОП ЭВМ
+Инженерия ПО для СРВ и ИВ. Модуль DSP
+
+Лабораторная работа №4
+Программирование на ЯВУ
+
+Исполнитель: Вахрушев Дмитрий Евгеньевич
+08.04.2023
+
+Вариант №2
+Среднее значение массива на С
+*/
+#include <def21060.h>
+#include <signal.h>
+#include "KTbo2-7_VakhrushevDE_constants_h.h"
+
+
+extern void SetupPorts(void);	//Init SPORT0-RX for receive with chain-DMA and	LINK2 on output
+extern void IRQ_Service(int);	//IRQ handler for RX0 DMA IRQ. Compute avg in buffer
+
+
+/*
+Calculate mean value of array
+Input:
+	buffer ptr,		(r4)
+	length			(r8)
+Output: mean value	(r0)
+*/
+float MeanCompute(float *buffer, int length)
+{
+	float acc = 0.0;
+	int i;
+	for(i = 0; i < length; ++i)
+		acc += buffer[i];		//sum all
+	return acc / (float)length;	//calc avg
+}
+
+int main( void )
+{
+	SetupPorts();
+	interrupt(SIG_SPR0I, IRQ_Service);
+	return 0;
+}

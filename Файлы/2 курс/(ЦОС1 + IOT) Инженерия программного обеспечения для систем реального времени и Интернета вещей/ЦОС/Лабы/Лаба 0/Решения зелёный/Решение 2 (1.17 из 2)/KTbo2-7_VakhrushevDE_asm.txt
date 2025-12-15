@@ -1,0 +1,56 @@
+/*****************************************************************************
+SFEDU, ICTIS
+DSP
+Vakhrushev D. E
+KTbo2-7
+Lab0
+ *****************************************************************************/
+#include "def21060.h"
+
+.segment/pm rst_irq;
+	nop;
+	jump start;
+.endseg;
+
+#define IMG_W 100
+#define IMG_H 91
+#define GREEN_ADDER 100
+
+
+.section/pm dm_data;
+.var in_image[IMG_H * IMG_W];
+.endseg;
+
+.section/pm pm_data;
+.var out_image[IMG_H * IMG_W];
+.endseg;
+	
+.section/pm pm_code;
+start:
+	R7 = GREEN_ADDER;
+	
+	R6 = 0xFF;
+	R4 = 0xFF00FF;
+	R3 = 0;
+
+	I0 = in_image;
+	M0 = 1;
+	
+	I8 = out_image;
+	M8 = 1;
+	
+	LCNTR = IMG_H * IMG_W, DO EndLoop UNTIL LCE;
+	R0 = DM(I0, M0);
+	R1 = LSHIFT R0 BY -8;
+	R1 = R1 and R6;
+	R1 = R1 + R7;
+	if LT R1 = R3;
+	COMP(R1, R6);
+	if GE R1 = R6;
+	R0 = R0 and R4;
+	R1 = lshift R1 by 8;
+	R0 = R0 or R1;
+	EndLoop:PM(I8, M8) = R0;
+	
+	idle;
+.endseg;

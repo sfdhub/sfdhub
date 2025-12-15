@@ -1,0 +1,146 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <set>
+#include <vector>
+#include <algorithm>
+#include <map>
+#include <windows.h>
+using namespace std;
+
+struct markov {
+    string nach;
+    string zam;
+    bool endd;
+};
+
+struct str {
+
+};
+
+int vvod(struct markov* ptr_m) {
+    ifstream fin("INPUT.txt");
+    int l1, l2, x;
+    fin >> l1;
+    for (int i = 0; i < l1; i++) {
+        fin >> ptr_m[i].nach >> ptr_m[i].zam;
+        ptr_m[i].endd = true;
+    }
+    fin >> l2;
+    for (int i = 0; i < l2; i++) {
+        fin >> x;
+        ptr_m[x - 1].endd = false;
+    }
+    return l1;
+}
+
+bool proverka(string h) {
+    for (int i = 0; i < h.size(); i++) {
+        if (h[i] != 'a' && h[i] != 'b') { return false; }
+    }
+    return true;
+}
+
+string shag(struct markov* ptr_m, string stroka, int l, bool* mar2) {
+    string a;
+    a = stroka;
+    HANDLE hConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    for (int i = 0; i < l; i++) {
+        if (ptr_m[i].nach == "_") {
+            stroka = ptr_m[i].zam + stroka;
+            *mar2 = ptr_m[i].endd;
+            for (int k = 0; k < a.size(); k++) { cout << a[k]; }
+            cout << " -> ";
+            for (int k = 0; k < stroka.size(); k++) { 
+                if (k < ptr_m[i].zam.size()) {
+                    SetConsoleTextAttribute(hConsoleHandle, 4);
+                    cout << stroka[k];
+                }
+                else {
+                    cout << stroka[k];
+                }
+                SetConsoleTextAttribute(hConsoleHandle, 15);
+            }
+            cout << endl;
+            return stroka;
+        }
+        if (stroka.find(ptr_m[i].nach) <= stroka.size()) {
+            if (ptr_m[i].zam == "_") {
+                stroka.erase(stroka.find(ptr_m[i].nach), ptr_m[i].nach.size());
+                for (int k = 0; k < a.size(); k++) {
+                    if (k>=a.find(ptr_m[i].nach) && k< a.find(ptr_m[i].nach)+ ptr_m[i].nach.size()) {
+                        SetConsoleTextAttribute(hConsoleHandle, 4);
+                        cout << a[k];
+                    }
+                    else {
+                        cout << a[k];
+                    }
+                    SetConsoleTextAttribute(hConsoleHandle, 15);
+                }
+                cout << " -> ";
+                for (int k = 0; k < stroka.size(); k++) { cout << stroka[k]; }
+                cout << endl;
+            }
+            else {
+                stroka.replace(stroka.find(ptr_m[i].nach), ptr_m[i].nach.size(), ptr_m[i].zam);
+                for (int k = 0; k < a.size(); k++) {
+                    if (k >= a.find(ptr_m[i].nach) && k < a.find(ptr_m[i].nach) + ptr_m[i].nach.size()) {
+                        SetConsoleTextAttribute(hConsoleHandle, 4);
+                        cout << a[k];
+                    }
+                    else {
+                        cout << a[k];
+                    }
+                    SetConsoleTextAttribute(hConsoleHandle, 15);
+                }
+                cout << " -> ";
+                for (int k = 0; k < stroka.size(); k++) {
+                    if (k >= a.find(ptr_m[i].nach) && k < a.find(ptr_m[i].nach) + ptr_m[i].zam.size()) {
+                        SetConsoleTextAttribute(hConsoleHandle, 4);
+                        cout << stroka[k];
+                    }
+                    else {
+                        cout << stroka[k];
+                    }
+                    SetConsoleTextAttribute(hConsoleHandle, 15);
+                }
+                cout << endl;
+            }
+            *mar2 = ptr_m[i].endd;
+            return stroka;
+        }
+    }
+    *mar2 = false;
+    return stroka;
+}
+
+
+int main() {
+    setlocale(LC_ALL, "Russian");
+    string stroka;
+    bool marker;
+    bool marker2;
+    struct markov* ptr_m;
+    ptr_m = new struct markov[32];
+    int l = vvod(ptr_m);
+    do {
+        cout << "Введите исходное слово: ";
+        cin >> stroka;
+        marker = proverka(stroka);
+        if (marker) {
+            marker2 = true;
+            bool* mar2 = &marker2;
+            while (*mar2) {
+                stroka = shag(ptr_m, stroka, l, mar2);
+            }
+            cout << "Результат: " << stroka << endl;
+        }
+        else {
+            cout << "Введеное слово содержит запрещенные символы (Разрешеный алфавит: a,b)" << endl;
+        }
+        stroka.clear();
+        cout << "Хотите продолжить работу?\n1-Да\n0-Нет" << endl;
+        cin >> marker;
+    } while (marker);
+    return 0;
+}

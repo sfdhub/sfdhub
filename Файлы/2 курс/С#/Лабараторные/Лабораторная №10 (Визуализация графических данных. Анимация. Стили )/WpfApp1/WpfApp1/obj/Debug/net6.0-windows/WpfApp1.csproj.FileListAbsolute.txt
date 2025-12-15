@@ -1,0 +1,5 @@
+C:\Users\TeaTime\Documents\Мой компьютер\Институт 2021 2 курс\С#\Лабораторная №10 (изуализация графических данных. Анимация. Стили )\WpfApp1\WpfApp1\obj\Debug\net6.0-windows\WpfApp1.csproj.AssemblyReference.cache
+C:\Users\TeaTime\Documents\Мой компьютер\Институт 2021 2 курс\С#\Лабораторная №10 (изуализация графических данных. Анимация. Стили )\WpfApp1\WpfApp1\obj\Debug\net6.0-windows\MainWindow.g.cs
+C:\Users\TeaTime\Documents\Мой компьютер\Институт 2021 2 курс\С#\Лабораторная №10 (изуализация графических данных. Анимация. Стили )\WpfApp1\WpfApp1\obj\Debug\net6.0-windows\App.g.cs
+C:\Users\TeaTime\Documents\Мой компьютер\Институт 2021 2 курс\С#\Лабораторная №10 (изуализация графических данных. Анимация. Стили )\WpfApp1\WpfApp1\obj\Debug\net6.0-windows\WpfApp1_MarkupCompile.cache
+C:\Users\TeaTime\Documents\Мой компьютер\Институт 2021 2 курс\С#\Лабораторная №10 (изуализация графических данных. Анимация. Стили )\WpfApp1\WpfApp1\obj\Debug\net6.0-windows\WpfApp1_MarkupCompile.lref

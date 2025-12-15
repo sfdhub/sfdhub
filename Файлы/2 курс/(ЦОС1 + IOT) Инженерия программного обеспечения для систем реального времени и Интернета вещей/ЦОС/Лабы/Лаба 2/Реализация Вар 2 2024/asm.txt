@@ -1,0 +1,76 @@
+
+#include "def21060.h"    
+#define N 2
+
+.SECTION/DM   dm_data;
+.var A[N] = {0.4, 0.6};
+
+
+.SECTION/DM     dm_external; 
+.var in;
+.var out;
+
+// Timer interrupt
+.SECTION/PM     pm_irq_timer0;
+    call timer_proc;
+    rti;
+
+
+// Start interrupt
+.SECTION/PM     pm_irq_svc;
+    nop; 
+     jump start; 
+    nop;
+    nop;
+    
+    
+    
+.SECTION/PM     pm_code;
+start:  
+    R0 = 0;         // counter N
+    R1 = 0;          // counter 4 pixels
+    F2 = 0;          // pixel sum
+    R10 = 0;        // output
+    R13 = N;        // program N
+    R14 = 4;         // program 4
+    R15 = 0;         // program zero
+    I0 = A;          // A constants ptr
+    M0 = 1;          // step
+        
+    TPERIOD = 500;
+    TCOUNT = 500;
+    BIT SET MODE1 IRPTEN;
+    BIT SET MODE2 TIMEN;
+    BIT SET IMASK TMZHI;
+
+wait:  IDLE;
+      jump wait;
+
+
+  
+      
+timer_proc:
+    R3 = DM(in);       // read data
+    F3 = FLOAT R3;      // data to float
+    F4 = DM(I0, M0);    // read mult
+    F4 = F3 * F4;  
+    F2 = F2 + F4;      // pixel
+    
+    R0 = R0 + 1;
+    comp(R0, R13);
+    if NE jump next;
+      R0 = 0;
+      I0 = A;
+      R2 = fix F2;    // fix pixel
+      R3 = 255;
+      R2 = MIN(R2, R3);
+      R2 = LSHIFT R2 by 24;
+      R10 = LSHIFT R10 by -8;  
+      R10 = R10 or R2;
+      R1 = R1 + 1;
+      F2 = 0;
+      COMP(R1, R14);
+      if NE jump next;
+        R1 = 0;
+        DM(out) = R10;
+next:  rts;

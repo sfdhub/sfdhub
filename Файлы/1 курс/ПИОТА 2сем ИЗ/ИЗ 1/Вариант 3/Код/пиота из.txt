@@ -1,0 +1,95 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+using namespace std;
+
+//Структура для хранения таблицы переходов автомата
+struct Avtomat {
+    int num_sos; //Номер состояния
+    int perehod_A; //Номер состояния куда перейдет автомат если символ a
+    int perehod_B; //Номер состояния куда перейдет автомат если символ b
+    int perehod_C; //Номер состояния куда перейдет автомат если символ c
+    bool sostoynie; //Допускающие ли состояние
+};
+
+
+//Функция заполнения структуры(хранящую таблицу автомата) данными из файла
+//На  вход подается указатель на структуру Avtomat
+//На выходе количество состояний автомата и заполненная структура в процессе
+int zapolnenie(struct Avtomat* ptr_a1) {
+    ifstream fin("INPUT.txt"); //Открытие файла
+    int l; //Количество состояний
+    fin >> l; //Считывание кооличества состояний из файла
+    for (int i = 0; i < l; i++) { // цикл заполнения структуры
+        fin >> ptr_a1[i].num_sos >> ptr_a1[i].perehod_A >> ptr_a1[i].perehod_B >> ptr_a1[i].perehod_C >> ptr_a1[i].sostoynie;
+    }
+    return l; //Возвращаем одно число, количество состояний
+}
+
+//Функция проверки коректности строки
+//На вход подается сама строка
+//На выходе true-строка коректнная или false-некоректная
+bool proverka(string vvod1) {
+    if (vvod1.size() < 4) { return false; } //Если строка пустая или ее длинна равна 1, то строка неправильная так как не из чего исходную первую пару символов
+    for (unsigned int i = 0; i < vvod1.size(); i++) { //Цикл проверки строки на то, что в ней все символы соответсвуют алфавиту автомата
+        if (vvod1[i] != 'a' && vvod1[i] != 'b' && vvod1[i] != 'c') { return false; break; } //Если встречается неимеющийся в алфавите символ, то строка неверна
+    }
+    return true;
+}
+
+
+//Функция обработки одного символа входно1 строки
+//На вход подается считаный символ, номер нынешнего состояния автомата, указатель на структуру
+//На выход поступает номер состояния автомата куда он перейдет по этому символу
+int perehod(char name, int num, struct Avtomat* ptr_a1) {
+    if (name == 'a') { return ptr_a1[num].perehod_A; }
+    if (name == 'b') { return ptr_a1[num].perehod_B; }
+    if (name == 'c') { return ptr_a1[num].perehod_C; }
+}
+
+int main()
+{
+    setlocale(LC_ALL, "Russian");
+    struct Avtomat* ptr_a;
+    ptr_a = (struct Avtomat*)calloc(10000, sizeof(struct Avtomat));
+    ifstream fin("INPUT.txt");
+    bool marker;
+    string vvod, avto;
+    int len = zapolnenie(ptr_a);
+    do {
+        cout << "Введите цепочку переходов: ";
+        cin >> vvod;
+        marker = proverka(vvod);
+        if (marker) {
+            int n = 0;
+            for (unsigned int i = 0; i < vvod.size(); i++) {
+                cout << vvod[i] << " " << ptr_a[n].num_sos;
+                n = perehod(vvod[i], n, ptr_a);
+                cout << "->" << ptr_a[n].num_sos;
+                if (i == vvod.size() - 1) { continue; }
+                else { cout << endl; }
+            }
+            if (ptr_a[n].sostoynie) {
+                cout << "\n" << "YES" << "\n" << "Хотите продолжить работу с автоматом? \n 1-Да \n 2-Нет" << endl;
+            }
+            else {
+                cout << "\n" << "NO" << "\n" << "Хотите продолжить работу с автоматом? \n 1-Да \n 2-Нет" << endl;
+            }
+
+        }
+        else {
+            if (vvod.size() < 4) { cout << "\n" << "Вы ввели слишком короткую строку, первая пара не сформированна\n Хотите продолжить работу с автоматом? \n 1-Да \n 2-Нет" << endl; }
+            else { cout << "\n" << "Вы ввели неправильную, несоответствующую алфавиту автомата(Алфавит автомата: a,b,c)\n Хотите продолжить работу с автоматом? \n 1-Да \n 2-Нет" << endl; }
+        }
+        int y;
+        cin >> y;
+        if (y == 1) {
+            marker = true;
+        }
+        else {
+            marker = false;
+        }
+    } while (marker);
+    cout << "Спасибо и хорошего дня!";
+    return 0;
+}

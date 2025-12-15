@@ -1,0 +1,70 @@
+/*************************************************************/
+/*                         ������ � �������                  */
+/*************************************************************/
+
+#include "def21060.h"    
+#define N 4000
+#define val 125
+
+//------------------------------------------------------
+// Source Vector 2 and Result Vector
+.SECTION/DM     dm_data; 
+.VAR input[N];
+//------------------------------------------------------
+
+
+//------------------------------------------------------
+// Source Vector 2
+.SECTION/PM     pm_data;  
+.VAR output[N];
+//------------------------------------------------------
+
+//------------------------------------------------------
+.SECTION/PM     pm_irq_svc;
+		nop; 
+		jump start; 
+		nop;
+		nop;
+//------------------------------------------------------
+
+//------------------------------------------------------
+.SECTION/PM     pm_code;
+start:  
+		I0 = input;
+		I1 = input;
+		M0 = 1;
+		M1 = 125;
+		I8 = output;
+		I9 = output;
+		M8 = 1;
+		M9 = 125;
+
+		
+		R2 = 0x00FF00; // green mask
+		R4 = val;
+		R4 = LSHIFT R4 BY 8;
+		R5 = 0xFF00FF; // RB mask
+		R6 = 0x00FF00;
+		
+		LCNTR = 110, DO xxx UNTIL LCE;
+			I0 = I1;
+			I8 = I9;
+			LCNTR = 125, DO yyy UNTIL LCE;
+				R1 = DM(I0, M0);
+				
+				R3 = R1 and R2;
+				R3 = R3 + R4;
+
+				COMP(R6,R3); // compare
+				if LE R3=R6; // if R3 > 0x00FF00, then R3 = 0x00FF00
+				R1 = R1 and R5;
+				R1 = R1 or R3;
+yyy:			PM(I8, M8) = R1;
+			MODIFY(I1, M1);	
+xxx:		MODIFY(I9, M9);	
+						
+wait:	IDLE;
+        jump wait;
+
+
+

@@ -1,0 +1,113 @@
+#include "stm32f4xx.h"
+#include "ultostr.h"
+#include "mpu9250.h"
+#include "oled.h"
+#include "motor.h"
+#include "sensor.h"
+#include "line.h"
+#include "buzzer.h"
+#include "bt.h"
+#include "key.h"
+#include "led.h"
+
+int main()
+{
+KEY_Init(); // Активировать кнопки
+KEY_Pressed(true); // Ждать нажатия кнопки
+OLED_Init();
+SENSOR_Init();
+int us ,ir[2];
+SENSOR_Get(us, ir);
+char b[20];
+
+MOTORS_Init();
+while(1)
+{
+OLED_SetScreen(false);
+SENSOR_Get(us, ir);
+ultostr(us,b,10);
+for (int j = 16;j>=0;j--)
+{
+b[j]=b[j-4];
+}
+b[0]='U';
+b[1]='S';
+b[2]=':';
+b[3]=' ';
+OLED_SetText(20, b, 1, 1);
+char data[100];
+int size=BT_Recv(data, 100); // Bluetooth принять данные
+if(size) BT_Send(data, size); // Bluetooth отправить данные
+MOTORS_Set(500, 500);
+for (int i = 0;i<=40;i++){
+OLED_SetScreen(false);
+SENSOR_Get(us, ir);
+ultostr(us,b,10);
+for (int j = 16;j>=0;j--)
+{
+b[j]=b[j-4];
+}
+b[0]='U';
+b[1]='S';
+b[2]=':';
+b[3]=' ';
+OLED_SetText(20, b, 1, 1);
+OLED_SetScreen(true);
+Wait(1);
+}//Wait(1600);
+MOTORS_Set(0, 0);
+for (int i = 0;i<=20;i++){
+OLED_SetScreen(false);
+SENSOR_Get(us, ir);
+ultostr(us,b,10);
+for (int j = 16;j>=0;j--)
+{
+b[j]=b[j-4];
+}
+b[0]='U';
+b[1]='S';
+b[2]=':';
+b[3]=' ';
+OLED_SetText(20, b, 1, 1);
+OLED_SetScreen(true);
+Wait(1);
+}//Wait(500);
+MOTORS_Set(500, -500);
+for (int i = 0;i<=29;i++){
+OLED_SetScreen(false);
+SENSOR_Get(us, ir);
+ultostr(us,b,10);
+for (int j = 16;j>=0;j--)
+{
+b[j]=b[j-4];
+}
+b[0]='U';
+b[1]='S';
+b[2]=':';
+b[3]=' ';
+OLED_SetText(20, b, 1, 1);
+OLED_SetScreen(true);
+Wait(1);
+}//Wait(850);
+MOTORS_Set(0, 0);
+for (int i = 0;i<=20;i++){
+OLED_SetScreen(false);
+SENSOR_Get(us, ir);
+ultostr(us,b,10);
+for (int j = 16;j>=0;j--)
+{
+b[j]=b[j-4];
+}
+b[0]='U';
+b[1]='S';
+b[2]=':';
+b[3]=' ';
+OLED_SetText(20, b, 1, 1);
+OLED_SetScreen(true);
+Wait(1);
+}//Wait(500);
+}
+
+
+
+}

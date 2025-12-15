@@ -1,0 +1,49 @@
+Laboratornaia rabota # 1 po FOI
+Izmerenie funkcii raspredelenia
+zariad elektrona
+.160210E-18
+massa elektrona
+.910910E-30
+koefficient preobrazovania delitelia napriajenia
+.475000E+01
+Postoiannaia Bolcmana
+.138054E-22
+Ploshad poverhnosti anoda v CI
+.450000E-03
+vvodim 14 par tochek
+Vvodim dannye: anodnyi tok v mkA s plavauishey tochkoi
+ i(          1)=
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,83 @@
+/*
+Институт компьютерных технологий и информационной безопасности ЮФУ
+Кафедра МОП ЭВМ
+Инженерия ПО для СРВ и ИВ. Модуль DSP
+
+Лабораторная работа №2
+Обработка прерываний
+
+Исполнитель: Вахрушев Дмитрий Евгеньевич
+25.03.2023
+
+Вариант №1
+*/
+ARCHITECTURE(ADSP-21060)
+
+$OBJECTS = $COMMAND_LINE_OBJECTS;
+
+MEMORY
+{
+	pm_rst_irq_seg  { TYPE(PM RAM) START(0x20004) END(0x20007) WIDTH(48) }
+	pm_tmh_irq_seq	{ TYPE(PM RAM) START(0x20010) END(0x20013) WIDTH(48) }
+	pm_tml_irq_seq	{ TYPE(PM RAM) START(0x2005c) END(0x2005f) WIDTH(48) }
+	
+    pm_code_seg { TYPE(PM RAM) START(0x20100) END(0x203ff) WIDTH(48) }
+    
+    pm_data_seg { TYPE(PM RAM) START(0x22400) END(0x29fff) WIDTH(32) }
+    dm_data_seg { TYPE(DM RAM) START(0x30000) END(0x3ffff) WIDTH(32) }
+    
+    dm_port_seq { TYPE(DM RAM) START(0x400000) END(0x400001) WIDTH(32)}
+}
+
+
+PROCESSOR P0
+{
+    OUTPUT( $COMMAND_LINE_OUTPUT_FILE )
+
+    SECTIONS
+    {
+    	//IRQ`s=====================
+        pm_rst_irq_seg	//RST
+        { 
+            INPUT_SECTIONS(KTbo2-7_VakhrushevDE_asm.doj(rst_irq))
+        } > pm_rst_irq_seg
+        
+        pm_tmh_irq_seq	//TIM High priority
+        { 
+            INPUT_SECTIONS(KTbo2-7_VakhrushevDE_asm.doj(tmh_irq))
+        } > pm_tmh_irq_seq
+        
+
+        pm_tml_irq_seq	//TIM Low priority
+        { 
+            INPUT_SECTIONS(KTbo2-7_VakhrushevDE_asm.doj(tml_irq))
+        } > pm_tml_irq_seq
+        
+        
+       	//Data segments============
+        dm_data_seg 
+        { 
+            INPUT_SECTIONS(KTbo2-7_VakhrushevDE_asm.doj(dm_data))
+        } > dm_data_seg
+        
+        pm_data_seg 
+        { 
+            INPUT_SECTIONS(KTbo2-7_VakhrushevDE_asm.doj(pm_data))
+        } > pm_data_seg
+        
+        
+        //Code segment=============
+        pm_code_seg 
+        { 
+            INPUT_SECTIONS(KTbo2-7_VakhrushevDE_asm.doj(pm_code))
+        } > pm_code_seg  
+        
+        
+        //External memory==========
+        dm_port_seq 
+        { 
+            INPUT_SECTIONS(KTbo2-7_VakhrushevDE_asm.doj(dm_port))
+        } > dm_port_seq  
+       
+    }
+}

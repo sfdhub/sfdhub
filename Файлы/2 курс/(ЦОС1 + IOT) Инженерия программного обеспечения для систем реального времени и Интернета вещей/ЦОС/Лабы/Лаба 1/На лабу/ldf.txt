@@ -1,0 +1,55 @@
+/*
+Èíñòèòóò êîìïüşòåğíûõ òåõíîëîãèé è èíôîğìàöèîííîé áåçîïàñíîñòè ŞÔÓ
+Êàôåäğà ÌÎÏ İÂÌ
+Èíæåíåğèÿ ÏÎ äëÿ ÑĞÂ è ÈÂ. Ìîäóëü DSP
+
+Ëàáîğàòîğíàÿ ğàáîòà ¹1
+Ïàìÿòü. Âû÷èñëèòåëüíûå áëîêè. Ïğîãğàììíûé ñåêâåíñîğ
+
+Èñïîëíèòåëü: Âàõğóøåâ Äìèòğèé Åâãåíüåâè÷
+18.03.2023
+
+Âàğèàíò ¹1
+*/
+ARCHITECTURE(ADSP-21060)
+
+$OBJECTS = $COMMAND_LINE_OBJECTS;
+
+MEMORY
+{
+	pm_irq_seg  { TYPE(PM RAM) START(0x20004) END(0x20007) WIDTH(48) }
+    pm_code_seg { TYPE(PM RAM) START(0x20100) END(0x203ff) WIDTH(48) }
+    
+    pm_data_seg { TYPE(PM RAM) START(0x22400) END(0x29fff) WIDTH(32) }
+    dm_data_seg { TYPE(DM RAM) START(0x30000) END(0x3ffff) WIDTH(32) }
+}
+
+
+PROCESSOR P0
+{
+    OUTPUT( $COMMAND_LINE_OUTPUT_FILE )
+
+    SECTIONS
+    {
+        pm_irq_seg 
+        { 
+            INPUT_SECTIONS(KTbo2-7_VakhrushevDE_asm.doj(rst_irq))
+        } > pm_irq_seg
+        
+        pm_code_seg 
+        { 
+            INPUT_SECTIONS(KTbo2-7_VakhrushevDE_asm.doj(pm_code))
+        } > pm_code_seg 
+        
+        dm_data_seg 
+        { 
+            INPUT_SECTIONS(KTbo2-7_VakhrushevDE_asm.doj(dm_data))
+        } > dm_data_seg
+        
+        pm_data_seg 
+        { 
+            INPUT_SECTIONS(KTbo2-7_VakhrushevDE_asm.doj(pm_data))
+        } > pm_data_seg 
+       
+    }
+}

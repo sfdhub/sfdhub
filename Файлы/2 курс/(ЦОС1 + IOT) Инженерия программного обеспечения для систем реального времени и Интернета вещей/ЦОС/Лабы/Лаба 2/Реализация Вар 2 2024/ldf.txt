@@ -1,0 +1,40 @@
+ARCHITECTURE(ADSP-21060)
+
+// Libraries from the command line are included in COMMAND_LINE_OBJECTS.
+$OBJECTS = $COMMAND_LINE_OBJECTS;
+
+MEMORY
+{
+  pm_irq_start  { TYPE(PM RAM) START(0x20004) END(0x20007) WIDTH(48) }
+  pm_irq_timer  { TYPE(PM RAM) START(0x20010) END(0x20013) WIDTH(48)}
+  pm_code_seg  { TYPE(PM RAM) START(0x20100) END(0x201ff) WIDTH(48)}
+  dm_data_seg  { TYPE(DM RAM) START(0x30000) END(0x30009) WIDTH(32)    }
+  dm_external  { TYPE(PM RAM) START(0x400000) END(0x400001) WIDTH(32)}
+}
+
+
+
+PROCESSOR P0
+{
+    OUTPUT( $COMMAND_LINE_OUTPUT_FILE )
+
+    SECTIONS
+    {
+      pm_irq_start{
+        INPUT_SECTIONS(file.doj(pm_irq_svc))
+      }>pm_irq_start
+      pm_irq_timer{
+        INPUT_SECTIONS(file.doj(pm_irq_timer0))
+      }>pm_irq_timer
+      pm_code_seg{
+        INPUT_SECTIONS(file.doj(pm_code))
+      }>pm_code_seg
+      dm_data_seg{
+        INPUT_SECTIONS(file.doj(dm_data))
+      }>dm_data_seg
+      dm_external{
+        INPUT_SECTIONS(file.doj(dm_external))
+      }>dm_external
+
+    }
+}

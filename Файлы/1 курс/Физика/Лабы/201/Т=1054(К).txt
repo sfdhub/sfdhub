@@ -1,0 +1,49 @@
+0.26
+Proverim vvedennye dannye
+   200.000000       .000000
+   172.000000       .020000
+   144.000000       .040000
+   118.000000       .060000
+    95.000000       .080000
+    74.000000       .100000
+    58.000000       .120000
+    43.000000       .140000
+    32.000000       .160000
+    23.000000       .180000
+    16.000000       .200000
+    11.000000       .220000
+     8.000000       .240000
+     5.000000       .260000
+esli wwod veren, to vvedite celyi 0
+0
+vvedite temperaturu katoda v Kelvin
+1054.0
+temperatura= 1054.0
+masshtab napriajenia U*= .908239E-01
+masshtab toka J*= .200000E-03
+Termoeds TEPA= .181648E+00
+ojidaemoe znachenie di/du=-.185437E-03
+experimentalnoe znachenie di/du=-.140000E-02
+vvedite celyi 0 chtoby prodoljit
+0
+znachenie maksimalnogo toka dioda= .295562E-03
+srednee znachenie koncentracii n0= .152451E+14
+srednee znachenie lineinoi plotnosti tau= .109909E-08
+sredniaia skorost u anoda vsr= .268916E+06
+znachenie koefficienta G1= .621131E+04
+znachenie naibolee veroiatnoy skorosti= .252777E+06
+vyvodim v kolonki 1 - vj/vv, 2 - f4,  3 - F4
+    1.005778         1.151654         8.695839
+    1.017236         1.150447         8.695839
+    1.028567         1.148089         8.074707
+    1.039773         1.144635         7.143010
+    1.050861         1.140143         6.521879
+    1.061832         1.134669         4.969051
+    1.072692         1.128266         4.658485
+    1.083442         1.120989         3.416222
+    1.094087         1.112890         2.795091
+    1.104630         1.104022         2.173960
+    1.115072         1.094433         1.552828
+    1.125418         1.084175          .931697
+    1.135670         1.073293          .931697
+vvedite 0 chtoby prodoljit, inache 1

@@ -1,0 +1,41 @@
+//ЮФУ, ИКТИБ, МОП ЭВМ
+//Прогроммирование и основы теории алгоритмов
+//Индивидуальное задание №3
+//Ktbo1-7 BekezinSA
+//Индивидуальное задание №3, Вариант №11
+//19.03.2022
+#include <iostream>
+#include <iomanip>
+#include <cmath>
+using namespace std;
+
+/*Функция recurs для рассчета ПРФ
+На вход функции подается два значения (y,x)
+Переменная now это текущее значение ПРФ
+Переменная next это то, что она вернет(следующее значение)*/
+int recurs(unsigned long long int y, unsigned long long int x) {
+    if (y == 0) {
+            printf("f(0,%llu) = g(%llu) = 3\n",x,x);
+            return 3;
+    }
+    unsigned long long int now = recurs(y - 1, x);
+    unsigned long long int next = pow(now, y);
+    printf("f(%llu,%llu) = h(%llu,f(%llu,%llu),%llu) = h(%llu,%llu,%llu) = %llu \n", y, x, y - 1, y - 1, x, x, y - 1, now, x, next);
+    return next;
+}
+
+int main()
+{
+    setlocale(LC_ALL, "Russian");
+    unsigned long long int y,x,M;
+    bool marker;
+    cout<<"Схема рекурсии:\nf(0,x)=g(x)=3\nf(y+1,x)=h(y,f(y,x),x)=(f(y,x))^(y+1)"<<endl;
+    do {
+        cout << "Введите y и x: ";
+        cin >> y >> x;
+        M = recurs(y, x);
+        cout << "Хотите продолжить работу:\n1-Да\n0-Нет" << endl;
+        cin >> marker;
+    } while (marker);
+    return 0;
+}

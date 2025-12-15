@@ -1,0 +1,111 @@
+/*
+Институт компьютерных технологий и информационной безопасности ЮФУ
+Кафедра МОП ЭВМ
+Инженерия ПО для СРВ и ИВ. Модуль DSP
+
+Лабораторная работа №1
+Память. Вычислительные блоки. Программный секвенсор
+
+Исполнитель: Вахрушев Дмитрий Евгеньевич
+18.03.2023
+
+Вариант №1
+Пакеты температур
+*/
+#include "def21060.h"
+
+#define sampleCount 124
+#define maxTemp 100
+#define minTemp -100
+
+.segment/pm rst_irq;
+	nop;
+	jump start;
+.endseg;
+
+
+
+.section/pm dm_data;
+.var input[sampleCount] = "input.txt";
+.var maxT[sampleCount / 4];
+.endseg;
+
+
+
+.section/pm pm_data;
+.var minT[sampleCount / 4];
+.var avg[4];
+.endseg;
+	
+
+
+.section/pm pm_code;
+start:
+	I0 = input;
+	I1 = maxT;
+	M0 = 1;
+	
+	I8 = minT;
+	B9 = avg;
+	L9 = @avg;
+	M8 = 1;
+ 
+	////////////////////main samples handler
+	LCNTR = sampleCount / 4, DO packetH UNTIL LCE;//packet handler
+		R15 = minTemp - 1;	//max
+		R14 = maxTemp + 1;	//min
+		
+		LCNTR = 4, DO sampleH UNTIL LCE;		  //sample handler
+			call packetCalc (db);					//update min, max
+				R0 = DM(I0, M0), R1 = PM(I9, M15);	//read smpl, read avg
+				R1 = R1 + R0;						//avg+=smpl
+		sampleH:PM(I9, M8) = R1;					//write new avg
+		
+	packetH:DM(I1, M0) = R15, PM(I8, M8) = R14;		//write min, max
+		
+	/////////////////tail handler
+	R0 = sampleCount & 3;	//тут вообще можно #if....#endif использовать
+	R0 = PASS R0;
+	IF EQ jump skipTailH;	//skip this block if packet is full
+	
+	LCNTR = sampleCount % 4; DO latsSamplesH UNTIL LCE;
+		R0 = DM(I0, M0), R1 = PM(I9, M15);	//read smpl, avg
+		R1 = R1 + R0;						//avg += smpl
+		latsSamplesH:PM(I9, M8) = R1;		//write new avg
+	skipTailH:
+	
+	/////////////////////final avg calc/////////////////////////////////////////////////////////
+	I9 = avg;	//вернуть указатель на 1ый отсчёт
+	F15 = 1.0 / ((sampleCount + (sampleCount % 4)) / 4);//для полного набора
+	F14 = 1.0 / (sampleCount / 4);						//для набора чуть меньше
+	
+	R12 = (sampleCount / 4) * 4;	//кол-во обработ.
+	R11 = sampleCount;				//cколько надо
+	R10 = 1;
+	LCNTR = 4; DO avgCalc UNTIL LCE;
+		R1 = PM(I9, M15);
+		F0 = FLOAT R1;	
+		
+		COMP(R12, R11);		// если набор неполный...
+		if GE F15 = F14;	// используем соот. коэф
+		
+		F0 = F0 * F15;		// avg /= count
+		
+		R1 = TRUNC F0;
+		avgCalc:R12 = R12 + R10, PM(I9, M8) = R1; //inc. counter, write avg
+
+	idle;
+
+/*Название Перерасчёт минимума и максимума
+Получает:
+	R0 - input sample
+	R15 - current max
+	R14 - current min
+Портит: ничего
+Результат: перерасчёт минимума и максимума в ригистрах R15, R14
+Тут раньше чтение и расчёт авг был, но пришлось утащить в DB часть
+*/
+packetCalc:
+	rts (db);	//Про длину ф-ций сказано ничего не было
+	R15 = MAX(R0, R15);
+	R14 = MIN(R0, R14);

@@ -9,3 +9,14 @@
 *.pdb filter=lfs diff=lfs merge=lfs -text
 *.ipdb filter=lfs diff=lfs merge=lfs -text
 *.iobj filter=lfs diff=lfs merge=lfs -text
+*.accdb filter=lfs diff=lfs merge=lfs -text
+*.JPEG filter=lfs diff=lfs merge=lfs -text
+*.JPG filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.odt filter=lfs diff=lfs merge=lfs -text
+*.db filter=lfs diff=lfs merge=lfs -text
+*.DOC filter=lfs diff=lfs merge=lfs -text
+*.mcd filter=lfs diff=lfs merge=lfs -text
+*.xmcd filter=lfs diff=lfs merge=lfs -text
+*.xls filter=lfs diff=lfs merge=lfs -text
+*.xlsx filter=lfs diff=lfs merge=lfs -text

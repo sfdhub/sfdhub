@@ -1,0 +1,40 @@
+using System.Text.RegularExpressions;
+public interface Iface
+{
+    void Func(string non);
+}
+class Nazvanue : Iface
+{
+    public void Func(string non)
+    {
+        int count1 = 0;
+        int count2 = 0;
+        string[] textMass = non.Split(' ','\t');
+        foreach (char c in non)
+        {
+            if(c =='\t')
+            {
+                count2++;
+            }
+            else if(c == ' ')
+            {
+                count1++;               
+            }
+        }
+        Console.WriteLine("Количество удалённых пробелов: {0}",count1);
+        Console.WriteLine("Количество удалённых табуляций: {0}", count2);
+        string result = non.Replace(" ", "");
+        Console.WriteLine(result.Replace("\t",""));
+
+    }
+}
+class MyClasss
+{
+    public static void Main()
+    {
+        Nazvanue naz = new Nazvanue();
+        Console.Write("Введите текст: ");
+        string words = Console.ReadLine();
+        naz.Func(words);
+    }
+}

@@ -1,0 +1,96 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <map>
+#include <fstream>
+using namespace std;
+string h;
+int sos = 1; bool marker1 = false;
+
+
+struct len{
+    vector <char> lenta;
+    int gol;
+};
+
+struct mashin {
+    map <char, char> dvig;
+    map <char, char> zap;
+    map <char, int> smena;
+};
+
+bool proverka(string h) {
+    for (int i = 0; i < h.size(); i++) {
+        if (h[i] != '1' && h[i] != '2' && h[i] != '3' && h[i] != '0') { return false; }
+    }
+    return true;
+}
+
+void vvod(struct mashin* ptr_m) {
+    ifstream fin("INPUT.txt");
+    int l1;
+    fin >> l1;
+    for (int i = 0; i < l1; i++) {
+        for (int j = 0; j <= 6; j++) {
+            char per, f1, f2; int f3;
+            fin >> per >> f1 >> f2 >> f3;
+            ptr_m[i].dvig[per] = f1;
+            ptr_m[i].zap[per] = f2;
+            ptr_m[i].smena[per] = f3;
+        }
+    }
+}
+
+void perehod(struct len* ptr_l, struct mashin* ptr_m) {
+    char t = ptr_l->lenta[ptr_l->gol];
+    if (t == 'X' && ptr_l->gol == ptr_l->lenta.size() - 1) { ptr_l->lenta.push_back('X'); }
+    if (ptr_m[sos].zap[t] != 'O') { ptr_l->lenta[ptr_l->gol] = ptr_m[sos].zap[t]; }
+    if (ptr_m[sos].dvig[t] == 'R') { ptr_l->gol++; }
+    else { ptr_l->gol--; }
+    sos = ptr_m[sos].smena[t];
+}
+
+int main()
+{
+    setlocale(LC_ALL, "Russian");
+    struct mashin* ptr_m;struct len* ptr_l;
+    ptr_m = new struct mashin[32];
+    ptr_l = new struct len;
+    ptr_l->gol=1;
+    vvod(ptr_m);
+    do {
+        cout << "Введите число\n";
+        ptr_l->lenta.push_back('X');
+        cin >> h;
+        marker1 = proverka(h);
+        if (marker1) {
+            cout << "Текущее состояние:" << sos << endl;
+            for (int i = 0; i < h.size(); i++) { ptr_l->lenta.push_back(h[i]); }
+            ptr_l->lenta.push_back('X');
+            for (int j = 0; j < ptr_l->lenta.size(); j++) { cout << ptr_l->lenta[j]; }cout << endl;
+            for (int j = 0; j < ptr_l->gol; j++) { cout << " "; }cout << "^" << endl;
+            int otst;
+            while (sos != 0) {
+                perehod(ptr_l, ptr_m);
+                cout << "Текущее состояние:" << sos << endl;
+                otst=0;
+                for (int j = 0; j < ptr_l->lenta.size(); j++) {
+                        if (ptr_l->lenta[j] != 'X' || ptr_l->lenta[j + 1] != 'X')cout << ptr_l->lenta[j];
+                        else {
+                                otst++;
+                        }
+                }
+                cout << endl;
+                for (int j = otst; j < ptr_l->gol; j++) { cout << " "; }cout << "^" << endl;
+            }
+            cout<<"Обработка числа завершена"<<endl;
+        }
+        else { cout << "Введеное число содержит запрещенные символы(Разрешеные символы: 1,2,3,0)\n"; }
+        cout << "Хотите повторить и ввести еще одно число?\n1 если да\n0 если нет\n";
+        cin >> marker1;
+        ptr_l->lenta.clear();
+        sos = 1; ptr_l->gol = 1;
+    } while (marker1);
+    cout<<"Хорошего дня!";
+    return 0;
+}

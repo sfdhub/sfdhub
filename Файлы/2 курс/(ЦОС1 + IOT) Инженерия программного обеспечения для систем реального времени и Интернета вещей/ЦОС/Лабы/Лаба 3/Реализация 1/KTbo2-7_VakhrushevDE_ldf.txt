@@ -1,0 +1,64 @@
+/*
+Институт компьютерных технологий и информационной безопасности ЮФУ
+Кафедра МОП ЭВМ
+Инженерия ПО для СРВ и ИВ. Модуль DSP
+
+Лабораторная работа №3
+IOP-процессор
+
+Исполнитель: Вахрушев Дмитрий Евгеньевич
+01.04.2023
+
+Вариант №1
+Стерео звук в моно
+*/
+ARCHITECTURE(ADSP-21060)
+
+$OBJECTS = $COMMAND_LINE_OBJECTS;
+
+MEMORY
+{
+	//IRQ's===================================================================
+	pm_rst_irq_seg  { TYPE(PM RAM) START(0x20004) END(0x20007) WIDTH(48) }	//RST
+	pm_irq_spr0		{ TYPE(PM RAM) START(0x20028) END(0x2002b) WIDTH(48) }	//SPORT0 - RX
+	
+	//Code====================================================================
+    pm_code_seg { TYPE(PM RAM) START(0x20100) END(0x203ff) WIDTH(48) }
+    
+    //Data====================================================================
+    dm_data_seg { TYPE(DM RAM) START(0x30000) END(0x3ffff) WIDTH(32) }
+}
+
+
+PROCESSOR P0
+{
+    OUTPUT( $COMMAND_LINE_OUTPUT_FILE )
+
+    SECTIONS
+    {
+    	//IRQ`s=====================
+        pm_rst_irq_seg	//RST
+        { 
+            INPUT_SECTIONS(KTbo2-7_VakhrushevDE_asm.doj(rst_irq))
+        } > pm_rst_irq_seg
+
+        pm_irq_spr0		//SPORT0 - RX
+        {
+        	INPUT_SECTIONS(KTbo2-7_VakhrushevDE_asm.doj(irq_spr0))
+        } > pm_irq_spr0
+        
+       	//Data segments============
+        dm_data_seg 
+        { 
+            INPUT_SECTIONS(KTbo2-7_VakhrushevDE_asm.doj(dm_data))
+        } > dm_data_seg
+        
+        
+        //Code segment=============
+        pm_code_seg 
+        { 
+            INPUT_SECTIONS(KTbo2-7_VakhrushevDE_asm.doj(pm_code))
+        } > pm_code_seg  
+            
+    }
+}
