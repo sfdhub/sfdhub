@@ -1,0 +1,1 @@
+sp_droprole 'managers'

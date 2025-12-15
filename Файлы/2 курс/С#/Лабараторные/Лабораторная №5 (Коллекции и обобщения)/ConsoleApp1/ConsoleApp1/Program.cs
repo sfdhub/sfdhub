@@ -1,0 +1,51 @@
+﻿using System.Text.RegularExpressions;
+public interface Iface
+{
+    void Func(string non);
+}
+class Nazvanue : Iface
+{
+    public void Func(string non)
+    {
+        int count1 = 0;
+        int count2 = 0;
+        foreach (char c in non)
+        {
+            if (c == '\t')
+            {
+                count2++;
+            }
+            else if (c == ' ')
+            {
+                count1++;
+            }
+        }
+        if (count1 > 0)
+        {
+            Console.WriteLine("\n Количество удалённых пробелов: {0}\t", count1);
+        }
+        if (count2 > 0)
+        {
+            Console.WriteLine("\n Количество удалённых табуляций: {0}\t", count2);
+        }
+        if (count2 > 0 || count1 > 0)
+        {
+            string result = non.Replace(" ", "");
+            Console.WriteLine("\n Изменённый текст: {0}\t", result.Replace("\t", ""));
+        }
+        else if (count2 == 0 && count1 == 0)
+        {
+            Console.WriteLine("\n В тексте не присутствуют пробелы и табуляции.\t");
+        }
+    }
+}
+class MyClasss
+{
+    public static void Main()
+    {
+        Nazvanue naz = new Nazvanue();
+        Console.Write("\n Введите текст: ");
+        string words = Console.ReadLine();
+        naz.Func(words);
+    }
+}

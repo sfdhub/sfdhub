@@ -1,0 +1,1 @@
+%lab5, Michenko D. G. variant 11

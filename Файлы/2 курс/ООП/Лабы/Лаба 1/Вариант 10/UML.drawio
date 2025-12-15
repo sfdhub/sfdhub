@@ -1,0 +1,22 @@
+<mxfile host="embed.diagrams.net" modified="2023-09-19T11:50:09.580Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36 Edg/117.0.2045.31" etag="zhPeGT1VB78_rIUnQwKy" version="21.7.5" type="embed">
+  <diagram id="7VD_lILQbjwEbw9PHwfj" name="Страница — 1">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="j7k5Ku3j3CjddblIxfGw-2" value="Index" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="310" y="170" width="170" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="j7k5Ku3j3CjddblIxfGw-3" value="+ word: string&lt;br&gt;+ pages : vector&amp;lt;int&amp;gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="j7k5Ku3j3CjddblIxfGw-2">
+          <mxGeometry y="26" width="170" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="j7k5Ku3j3CjddblIxfGw-4" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="j7k5Ku3j3CjddblIxfGw-2">
+          <mxGeometry y="70" width="170" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="j7k5Ku3j3CjddblIxfGw-5" value="+ Index(string)&lt;br&gt;~ Index()&lt;br&gt;+ operator+(&amp;amp;Index): Index&lt;br&gt;+ setPages(vector&amp;lt;int&amp;gt;): void&lt;br&gt;+ getPagesCount() : long&lt;br&gt;+ getWord() : string&lt;br&gt;+ addPage(int) : void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="j7k5Ku3j3CjddblIxfGw-2">
+          <mxGeometry y="78" width="170" height="122" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

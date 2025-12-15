@@ -1,0 +1,6 @@
+UPDATE Review
+SET ReviewDate = CASE
+WHEN IDClient < 5 THEN '2021-05-10'
+WHEN IDClient >= 5 AND IDClient < 30 THEN '2022-12-12'
+WHEN IDClient >= 30 THEN '2023-05-05'
+END;

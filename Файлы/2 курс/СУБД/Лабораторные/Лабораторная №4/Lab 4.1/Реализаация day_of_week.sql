@@ -1,0 +1,1 @@
+SELECT dbo.[day_of_week] ('2020-10-15')
