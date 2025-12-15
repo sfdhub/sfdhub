@@ -1,0 +1,38 @@
+
+Library ieee;
+use ieee.std_logic_1164.all;
+----------------------------------------
+----------------------------------------
+entity alu_op01 is
+generic(
+	dataSize : integer := 40
+);
+port( 
+		X,Y : in Std_Logic_Vector(dataSize downto 0);
+		Z01: out Std_Logic_Vector(dataSize downto 0);
+		CF, VF: out Std_Logic;
+		ZF: out Std_Logic;
+		NF: out Std_Logic;
+		POdF: out Std_Logic
+);
+end alu_op01;
+
+Architecture ALU of alu_op01 is
+  constant const0 :std_Logic_Vector(dataSize downto 0) := (others => '0');
+  signal YII: std_Logic_Vector(dataSize downto 0) := (others => '0');
+  
+
+BEGIN
+
+	YII <= X and Y;
+	Z01 <= YII;
+    
+
+    CF <= '0';
+    VF <= '0';
+    NF <= YII(dataSize);
+    ZF <= '1' when YII = const0 else '0';
+    POdF <= YII(0);
+    
+
+end;

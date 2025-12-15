@@ -18,3 +18,11 @@
 **/obj/
 
 **/.vs/
+
+*.tlog
+
+**/bin/
+**/Debug/
+
+*.exe
+*.suo
