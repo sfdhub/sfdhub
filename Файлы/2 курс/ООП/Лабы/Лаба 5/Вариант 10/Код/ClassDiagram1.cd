@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="OOP5.Shape">
+    <Position X="7.25" Y="1.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>ACAAIACAAJAAgAAAAAAAAAACEAAQAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Shape.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="points" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="OOP5.Square">
+    <Position X="4" Y="5.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Figures.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOP5.Hexagon">
+    <Position X="7.5" Y="5.25" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Figures.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOP5.Point">
+    <Position X="10.25" Y="1.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAA=</HashCode>
+      <FileName>Point.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOP5.FactoryShape">
+    <Position X="4" Y="1.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>FactoryShape.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OOP5.Operations">
+    <Position X="4" Y="2.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAEAAAAAAAAAAAAEAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>Operations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -1,0 +1,18 @@
+# =======================================================
+# VENDOR DAEMON Section
+# =======================================================
+VENDOR maplelmg
+# =======================================================
+# FEATURE Section
+# =======================================================
+
+# your license for Maple 6 includes these components
+
+PACKAGE MapleWithExcel maplelmg 2000.0831 C7381FF8F657 \
+	COMPONENTS="MapleExcel Maple" OPTIONS=SUITE
+# The following line licenses the given feature
+
+FEATURE MapleWithExcel maplelmg 2000.0831 permanent uncounted \
+	587C12AF3263 HOSTID=ANY PLATFORMS=i86_n ISSUER="Waterloo Maple \
+	Inc." ISSUED=5-may-2000 NOTICE=" INRIA Rocquencourt" \
+	SN=500023180
